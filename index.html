@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全要素字数统计器 · 中英文/符号/数字 分项统计</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #f6f9fc 0%, #edf2f7 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .card {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 20, 30, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            padding: 2rem 2rem 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.2s ease;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 0 0 0.25rem 0;
+            background: linear-gradient(135deg, #1e3c5c, #2b5a7a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .subhead {
+            font-size: 1rem;
+            color: #3f5e7a;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px dashed #bcd0df;
+        }
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+        .textarea-wrapper {
+            background: #ffffffd6;
+            border-radius: 2rem;
+            box-shadow: inset 0 2px 8px rgba(0,20,30,0.08), 0 5px 12px rgba(18, 52, 77, 0.1);
+            padding: 0.5rem;
+        }
+        textarea {
+            width: 100%;
+            height: 240px;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            border: none;
+            background: transparent;
+            border-radius: 1.8rem;
+            resize: vertical;
+            outline: none;
+            color: #11212e;
+            caret-color: #2b6c9e;
+            font-weight: 400;
+        }
+        textarea::placeholder {
+            color: #96adc2;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .stat-tile {
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            border-radius: 1.8rem;
+            padding: 1.4rem 1rem;
+            text-align: center;
+            box-shadow: 0 8px 18px -8px rgba(33, 68, 92, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            transition: transform 0.1s ease;
+        }
+        .stat-tile:hover {
+            transform: translateY(-2px);
+            background: #ffffffee;
+        }
+        .tile-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #4d6278;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+        .tile-number {
+            font-size: 2.7rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #113946;
+        }
+        .tile-unit {
+            font-size: 0.9rem;
+            color: #7c8f9e;
+            margin-left: 2px;
+        }
+        .total-section {
+            background: #1e3c5c;
+            border-radius: 2rem;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 14px 25px -10px #1a3349;
+            border: 1px solid #9ab8d4;
+            margin-top: 0.2rem;
+        }
+        .total-label {
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #eaf3fc;
+        }
+        .total-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: #ffffff1a;
+            padding: 0.2rem 1.8rem;
+            border-radius: 3rem;
+            color: white;
+            box-shadow: inset 0 2px 5px #0000001a;
+            border: 1px solid #ffffff4d;
+        }
+        .separator-detail {
+            background: #e4edf5;
+            border-radius: 2rem;
+            padding: 1.3rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem 2.5rem;
+            align-items: center;
+            border: 1px solid #c4d7e8;
+        }
+        .detail-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        .detail-badge {
+            background: white;
+            border-radius: 3rem;
+            padding: 0.3rem 1rem 0.3rem 1.3rem;
+            box-shadow: 0 4px 12px #b7cedf66;
+            font-size: 1.1rem;
+        }
+        .detail-badge span {
+            font-weight: 650;
+            color: #1a4356;
+            margin-right: 0.4rem;
+        }
+        .small-note {
+            font-size: 0.85rem;
+            color: #34657f;
+            background: #d2e5f5;
+            padding: 0.2rem 0.8rem;
+            border-radius: 3rem;
+        }
+        .footnote {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #6b8da8;
+            margin-top: 1.2rem;
+        }
+        .reset-btn {
+            background: none;
+            border: 1.5px solid #9bb6cc;
+            color: #2a4b68;
+            font-size: 0.9rem;
+            padding: 0.2rem 1.4rem;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover {
+            background: #ffffffb3;
+            border-color: #1d618b;
+        }
+        @media (max-width: 640px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .total-section {
+                flex-direction: column;
+                align-items: start;
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>📊 字·统·计</h1>
+    <div class="subhead">独立区分中文、英文、数字、符号（含中英文标点）· 总字数实时呈现</div>
+
+    <div class="main-panel">
+        <!-- 文本输入区 -->
+        <div class="textarea-wrapper">
+            <textarea id="textInput" placeholder="请输入任意文本，中英文、标点、数字、符号… 自动拆分统计" autofocus></textarea>
+        </div>
+
+        <!-- 四项主要独立分类：中文 / 英文 / 数字 / 符号（所有标点+符号） -->
+        <div class="stat-grid">
+            <div class="stat-tile" id="chineseTile">
+                <div class="tile-label">🇨🇳 中文</div>
+                <div class="tile-number" id="chineseCount">0</div>
+                <span class="tile-unit">字</span>
+            </div>
+            <div class="stat-tile" id="englishTile">
+                <div class="tile-label">🔤 英文</div>
+                <div class="tile-number" id="englishCount">0</div>
+                <span class="tile-unit">字母</span>
+            </div>
+            <div class="stat-tile" id="digitTile">
+                <div class="tile-label">🔢 数字</div>
+                <div class="tile-number" id="digitCount">0</div>
+                <span class="tile-unit">个</span>
+            </div>
+            <div class="stat-tile" id="symbolTile">
+                <div class="tile-label">🔣 符号(标点)</div>
+                <div class="tile-number" id="symbolCount">0</div>
+                <span class="tile-unit">个</span>
+            </div>
+        </div>
+
+        <!-- 总字数 (包含所有字符: 中文+英文+数字+符号+其他不可见？但我们会统一按字符数统计。实际上总字数 = 所有字符个数，包含制表符换行等，但用户可见一般统计所有) 
+             我们采用直接取字符串长度作为总字数，更符合直觉。同时也单独计算分项。  分项独立不会重复，总字数 = 中+英+数字+符号+剩余(比如特殊不可见,但通常很少,保留给用户透明) 
+             为了明确，我们单独显示总字符数（含空格、换行等），再下方展示分项加和校验小注-->
+        <div class="total-section">
+            <span class="total-label">📝 总字符数 (含空格/换行/所有)</span>
+            <span class="total-value" id="totalChars">0</span>
+        </div>
+
+        <!-- 详细统计卡片: 把英文符号 / 中文符号 独立出来 (同时保留汇总符号) 并显示一些额外信息 -->
+        <div class="separator-detail">
+            <div class="detail-item"><span class="detail-badge"><span id="enSymbolCount">0</span> 英文标点</span> <span class="small-note">. , ! ? etc.</span></div>
+            <div class="detail-item"><span class="detail-badge"><span id="zhSymbolCount">0</span> 中文标点</span> <span class="small-note">，。、“”【】</span></div>
+            <div class="detail-item"><span class="detail-badge"><span id="otherSymbolCount">0</span> 其他符号</span> <span class="small-note">数学、货币等</span></div>
+            <div style="flex:1; text-align:right;">
+                <button class="reset-btn" id="resetBtn">清空</button>
+            </div>
+        </div>
+        <div class="footnote">
+            ⚡ 中文汉字/英文单词字母/阿拉伯数字/中英文标点及符号全独立 · 总字数为所有字符个数
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const textarea = document.getElementById('textInput');
+        // 主计数显示
+        const chineseSpan = document.getElementById('chineseCount');
+        const englishSpan = document.getElementById('englishCount');
+        const digitSpan = document.getElementById('digitCount');
+        const symbolSpan = document.getElementById('symbolCount');   // 所有符号合并
+        const totalSpan = document.getElementById('totalChars');
+        // 细分符号
+        const enSymbolSpan = document.getElementById('enSymbolCount');
+        const zhSymbolSpan = document.getElementById('zhSymbolCount');
+        const otherSymbolSpan = document.getElementById('otherSymbolCount');
+
+        // 重置按钮
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 核心统计函数
+        function updateCounts() {
+            const text = textarea.value;
+            const total = text.length;                       // 总字符数（含任何字符）
+
+            // 分类计数器
+            let chinese = 0;          // 中文字符（汉字范围，可包括日韩统一汉字，主要取CJK统一表意文字）
+            let english = 0;           // 英文拉丁字母 (A-Z a-z)
+            let digits = 0;            // 阿拉伯数字 0-9
+            // 标点符号三大类：英文标点、中文标点、其他符号（剩余符号类）
+            let enPunct = 0;            // 英文标点 (半角符号 . , ! ? : ; ' " - ( ) [ ] { } / \ ` ~ @ # $ % ^ & * + = < > | 以及空格？但空格一般不当作标点。我们根据分类：空格属于控制字符？但常见标点不包括空格，我们把空格放在“其他符号”或独立? 为了让分类合理，我们把空格和不可见归类到“其他符号”/剩余符号, 但用户要求独立显示中英文符号，所以英文符号只包括半角标点(不含字母数字)
+            let zhPunct = 0;            // 中文标点（全角标点：，。、；：“”‘’！？【】（）《》…—～・等）
+            let otherSymbols = 0;        // 既非中英文也非数字, 也不是中英文标点的符号 (例如数学符号、货币符号、特殊图形、空格、换行等)
+
+            // 遍历每一个字符
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                const code = ch.charCodeAt(0);
+
+                // 判断中文 (CJK统一表意文字，范围 4E00-9FFF 常用，可扩展至 3400-4DBF 扩展A，等等，但我们采用通用判断：主要CJK区块)
+                // 包含常见中日韩汉字 (Unicode 主要区块 CJK Unified Ideographs)
+                if ((code >= 0x4E00 && code <= 0x9FFF) ||      // 常用中文
+                    (code >= 0x3400 && code <= 0x4DBF) ||      // CJK扩展A
+                    (code >= 0x20000 && code <= 0x2A6DF) ||    // CJK扩展B (辅助平面，但通常一次遍历可能包含，保险加入)
+                    (code >= 0x2A700 && code <= 0x2B73F) ||    // CJK扩展C
+                    (code >= 0x2B740 && code <= 0x2B81F) ||    // 扩展D
+                    (code >= 0x2B820 && code <= 0x2CEAF) ||    // 扩展E
+                    (code >= 0x2CEB0 && code <= 0x2EBEF) ||    // 扩展F
+                    (code >= 0x3007) && code <= 0x3007 ||       // 〇 (非汉字但习惯纳入)
+                    (code >= 0xFA0E && code <= 0xFA2D)          // 部分兼容汉字，为全面，但不必太复杂，主要覆盖常用
+                    ) {
+                    // 此外包括全角符号但排除。汉字一般不包括标点。粗略涵盖常用中文。
+                    // 但为了避免把中文标点纳入汉字，需要先排除全角标点区域：FF00-FFEF为全角ASCII/标点, 不包括汉字。
+                    // 我们的code落在4E00-9FFF绝不会是中文标点。所以安全。
+                    chinese++;
+                    continue;
+                }
+
+                // 英文 (拉丁字母 A-Z a-z)
+                if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+                    english++;
+                    continue;
+                }
+
+                // 阿拉伯数字
+                if (code >= 48 && code <= 57) {
+                    digits++;
+                    continue;
+                }
+
+                // 分类符号：首先定义英文标点（半角标点, 排除字母数字，基于常见unicode）
+                // 半角标点字符集： !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 以及反引号等。 包含空格? 空格归类为其他符号(不可见)
+                // 英文标点通常指这些半角符号。另外 - 有时算连字符，包括在内。
+                const isEnPunct = 
+                    (code >= 33 && code <= 47) ||   // ! " # $ % & ' ( ) * + , - . /
+                    (code >= 58 && code <= 64) ||   // : ; < = > ? @
+                    (code >= 91 && code <= 96) ||   // [ \ ] ^ _ `
+                    (code >= 123 && code <= 126);    // { | } ~
+
+                // 中文标点（全角）范围大致：3000-303F (CJK符号标点) , FF00-FFEF (全角ASCII兼容标点) 以及一些常用：、。等
+                // 更精确常见中文标点：、。·“”‘’！？，；：（）【】《》～…—　〜
+                // 使用Unicode区块判断：
+                // CJK符号和标点：3000–303F
+                // 全角ASCII标点：FF00–FFEF (包含全角！＂＃＄％＆＇（）＊＋，－．／：；＜＝＞？＠［＼］＾＿｀｛｜｝～)
+                // 一般平常用的中文标点都在这些区块
+                const isZhPunct = 
+                    (code >= 0x3000 && code <= 0x303F) ||    // 例如顿号、句号、全角空格等
+                    (code >= 0xFF00 && code <= 0xFFEF);      // 全角ASCII形式
+
+                // 另外补充一些零星中文标点，比如波浪号等，但上述已覆盖
+                // 但我们要小心，某些全角数字/字母会落在FF00范围（全角字母数字），但已经被前面的英文/数字过滤，不会到达这里。
+                // 所以剩下的全角标点基本就是中文标点。
+                if (isEnPunct) {
+                    enPunct++;
+                    continue;
+                } else if (isZhPunct) {
+                    zhPunct++;
+                    continue;
+                } else {
+                    // 剩下字符包括但不限于：空格(\u0020), 制表符\n\r, 其他货币符号(¥$€)、数学符号(∑√)、图形等等
+                    otherSymbols++;
+                    continue;
+                }
+            }
+
+            // 所有符号总数 = 英文标点 + 中文标点 + 其他符号
+            const totalSymbols = enPunct + zhPunct + otherSymbols;
+
+            // 更新主界面 tile
+            chineseSpan.textContent = chinese;
+            englishSpan.textContent = english;
+            digitSpan.textContent = digits;
+            symbolSpan.textContent = totalSymbols;          // 符号汇总
+            totalSpan.textContent = total;                   // 总字符
+
+            // 更新细分
+            enSymbolSpan.textContent = enPunct;
+            zhSymbolSpan.textContent = zhPunct;
+            otherSymbolSpan.textContent = otherSymbols;
+
+            // 附加: 校验分项加和是否等于total (为了透明，我们在控制台可输出，但不影响UI)
+            // 但用户不用关心，分项之和 = chinese+english+digits+enPunct+zhPunct+otherSymbols = chinese+english+digits+totalSymbols 必然等于total, 因为我们覆盖所有分支。
+            // 只有极少未知字符（如代理项）? 但是遍历是按照字符，对于超出基本平面，charCodeAt只是单个UTF-16码元，但length统计也是码元个数。整个统计基于UTF-16码元，这符合JS的字符串length定义。因此保持一致。
+        }
+
+        // 监听输入事件
+        textarea.addEventListener('input', updateCounts);
+
+        // 重置按钮
+        resetBtn.addEventListener('click', function() {
+            textarea.value = '';
+            updateCounts();  // 强制更新
+            textarea.focus();
+        });
+
+        // 页面加载时执行一次（若有预置内容，但无预置，可显示全0）
+        updateCounts();
+
+        // 可选：添加示例文本按钮（为了展示效果，双击或者放个小提示，但无需）
+        // 为展示效果，加一个简单示范：点击清空旁可以填入样例。
+        // 但为了简洁，给个隐性双击标题填充样例
+        const h1 = document.querySelector('h1');
+        h1.addEventListener('dblclick', function() {
+            if (textarea.value === '') {
+                textarea.value = 'Hello, 世界！ 2026年，统计中英文符号：中文标点“ ”‘’——… 英文标点, . !? 混合符号：@#$  + 10% 3.14。';
+                updateCounts();
+            }
+        });
+    })();
+</script>
+
+<!-- 补充说明： 中文标点包含全角，英文标点半角。其他符号如空格/换行/特殊符号会归入「其他符号」，总计包含在符号中。 总字数 = 所有独立字符之和。 -->
+</body>
+</html>
+<!-- 恭喜你能看到这，作者deepseek，快手账号：snacksawa（快手号）bilibili账号:零食大礼包awa -->
