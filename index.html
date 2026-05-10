@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>字数统计·Word Count</title>
+    <title>字数统计</title>
     <style>
         * {
             box-sizing: border-box;
@@ -51,7 +51,7 @@
             cursor: pointer;
             color: #1f4a6e;
             font-weight: 500;
-            transition: all 0.15s;
+            transition: all 0.15;
             border: 1px solid transparent;
         }
         .lang-btn.active {
@@ -82,7 +82,7 @@
             margin-bottom: 1.8rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px dashed #b3cbdf;
-            transition: opacity 0.1s;
+            transition: opacity 0.1;
         }
         .main-panel {
             display: flex;
@@ -228,7 +228,7 @@
         }
         /* 语言切换过渡 */
         .translate-item {
-            transition: all 0.1s;
+            transition: all 0.1;
         }
         @media (max-width: 680px) {
             .stat-grid {
@@ -241,21 +241,21 @@
 <div class="card">
     <!-- 语言切换栏（显示在顶部） -->
     <div class="lang-bar">
-        <button class="lang-btn active" data-lang="zh">🇨🇳 中文</button>
-        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-        <button class="lang-btn" data-lang="ja">🇯🇵 日本語</button>
-        <button class="lang-btn" data-lang="ko">🇰🇷 한국어</button>
-        <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+        <button class="lang-btn active" data-lang="zh">中文</button>
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="ja">日本語</button>
+        <button class="lang-btn" data-lang="ko">한국어</button>
+        <button class="lang-btn" data-lang="ru">Русский</button>
         <span style="flex:1; min-width:60px;"></span>
     </div>
 
     <h1>📊 <span data-i18n="title">字数统计</span></h1>
-    <div class="subhead" data-i18n="subtitle">独立区分中文、英文、数字、符号，界面语言可切换</div>
+    <div class="subhead" data-i18n="subtitle">切换语言</div>
 
     <div class="main-panel">
         <!-- 文本输入区 -->
         <div class="textarea-wrapper">
-            <textarea id="textInput" placeholder="⏎ 请输入任意文本… 自动统计" autofocus></textarea>
+            <textarea id="textInput" placeholder="请输入任意文本…" autofocus></textarea>
         </div>
 
         <!-- 五项主要分类：中文 / 英文 / 全球其他语言 / 数字 / 符号（新增全球语言列） -->
@@ -448,18 +448,18 @@
         // ---------- 多语言界面翻译字典 ----------
         const translations = {
             zh: {
-                title: '字·统·计',
-                subtitle: '独立区分中文、英文、数字、符号 · 界面语言可切换',
-                chinese: '🇨🇳 中文',
-                english: '🔤 英文',
-                world: '🌍 全球语言',
-                digit: '🔢 数字',
-                symbol: '🔣 符号(标点)',
+                title: '字数统计',
+                subtitle: '切换语音',
+                chinese: '中文',
+                english: '英文',
+                world: '全球语言',
+                digit: '数字',
+                symbol: '符号(标点)',
                 char: '字',
                 letter: '字母',
                 num_unit: '个',
                 sym_unit: '个',
-                total_label: '📝 总字符数 (含所有)',
+                total_label: '总字符数 (含所有)',
                 enPunct: '英文标点',
                 enPunct_exp: '. , ! ?',
                 zhPunct: '中文标点',
@@ -467,21 +467,21 @@
                 otherPunct: '其他符号',
                 otherPunct_exp: '数学、货币等',
                 reset_btn: '清空',
-                footnote: '⚡ 中文汉字/英文/全球其他文字/数字/标点全独立 · 总字符数'
+                footnote: '总字符数'
             },
             en: {
                 title: 'CHAR·COUNTER',
                 subtitle: 'Chinese / English / World / Digits / Symbols · Switchable UI',
-                chinese: '🇨🇳 Chinese',
-                english: '🔤 English',
-                world: '🌍 World Lang',
-                digit: '🔢 Digits',
-                symbol: '🔣 Symbols',
+                chinese: 'Chinese',
+                english: 'English',
+                world: 'World Lang',
+                digit: 'Digits',
+                symbol: 'Symbols',
                 char: 'char',
                 letter: 'ltr',
                 num_unit: '',
                 sym_unit: '',
-                total_label: '📝 Total Characters',
+                total_label: 'Total Characters',
                 enPunct: 'En punct',
                 enPunct_exp: '. , ! ?',
                 zhPunct: 'Zh punct',
@@ -489,21 +489,21 @@
                 otherPunct: 'Other symb',
                 otherPunct_exp: 'math, currency',
                 reset_btn: 'Clear',
-                footnote: '⚡ Chinese / English / World / Digits / Symbols · total chars'
+                footnote: 'total chars'
             },
             ja: {
-                title: '文字·カウンター',
-                subtitle: '中国語/英語/世界の言語/数字/記号 · 言語切替可',
-                chinese: '🇨🇳 中国語',
-                english: '🔤 英語',
-                world: '🌍 世界の言語',
-                digit: '🔢 数字',
-                symbol: '🔣 記号',
+                title: '文字',
+                subtitle: '言語切替可',
+                chinese: '中国語',
+                english: '英語',
+                world: '世界の言語',
+                digit: '数字',
+                symbol: '記号',
                 char: '字',
                 letter: '文字',
                 num_unit: '',
                 sym_unit: '',
-                total_label: '📝 全文字数',
+                total_label: '全文字数',
                 enPunct: '英記号',
                 enPunct_exp: '. , ! ?',
                 zhPunct: '中記号',
@@ -511,21 +511,21 @@
                 otherPunct: '他記号',
                 otherPunct_exp: '数学·通貨',
                 reset_btn: 'クリア',
-                footnote: '⚡ 中国語/英語/世界/数字/記号を独立計測'
+                footnote: '独立計測'
             },
             ko: {
-                title: '글자·통계',
-                subtitle: '중국어/영어/세계 언어/숫자/기호 · 언어 전환 가능',
-                chinese: '🇨🇳 중국어',
-                english: '🔤 영어',
-                world: '🌍 세계 언어',
-                digit: '🔢 숫자',
-                symbol: '🔣 기호',
+                title: '글자통계',
+                subtitle: '언어 전환 가능',
+                chinese: '중국어',
+                english: '영어',
+                world: '세계 언어',
+                digit: '숫자',
+                symbol: '기호',
                 char: '자',
                 letter: '글자',
                 num_unit: '',
                 sym_unit: '',
-                total_label: '📝 전체 글자 수',
+                total_label: '전체 글자 수',
                 enPunct: '영문 기호',
                 enPunct_exp: '. , ! ?',
                 zhPunct: '중문 기호',
@@ -533,21 +533,21 @@
                 otherPunct: '기타 기호',
                 otherPunct_exp: '수학·통화',
                 reset_btn: '지우기',
-                footnote: '⚡ 중국어/영어/세계어/숫자/기호 독립 집계'
+                footnote: '독립 집계'
             },
             ru: {
                 title: 'СЧЁТЧИК СИМВОЛОВ',
-                subtitle: 'Китайский/Английский/Языки мира/Цифры/Символы · Смена языка',
-                chinese: '🇨🇳 Китайский',
-                english: '🔤 Английский',
-                world: '🌍 Языки мира',
-                digit: '🔢 Цифры',
-                symbol: '🔣 Символы',
+                subtitle: 'Смена языка',
+                chinese: 'Китайский',
+                english: 'Английский',
+                world: 'Языки мира',
+                digit: 'Цифры',
+                symbol: 'Символы',
                 char: 'зн',
                 letter: 'бк',
                 num_unit: '',
                 sym_unit: '',
-                total_label: '📝 Всего символов',
+                total_label: 'Всего символов',
                 enPunct: 'Англ пункт',
                 enPunct_exp: '. , ! ?',
                 zhPunct: 'Кит пункт',
@@ -555,7 +555,7 @@
                 otherPunct: 'Др символы',
                 otherPunct_exp: 'матем, валюта',
                 reset_btn: 'Очистить',
-                footnote: '⚡ Ки/Ан/Миp/Цифры/Cимволы раздельно'
+                footnote: 'Ки/Ан/Миp/Цифры/Cимволы раздельно'
             }
         };
 
